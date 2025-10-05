@@ -12,8 +12,8 @@ import SwiftUI
 ///
 /// `AnimatedMesh` uses `TimelineView(.animation)` to refresh frames at the system's animation
 /// cadence and feeds the current timestamp into the theme so it can produce smoothly changing
-/// colors. The underlying gradient is drawn with `MeshGradient`, using a fixed 3×3 mesh and
-/// the control points provided by the theme.
+/// colors. The underlying gradient is drawn with `MeshGradient`, using the control points and
+/// dimensions provided by the theme.
 ///
 /// Use this view as a background or a full-screen decorative element to add dynamic,
 /// themeable color motion to your interface.
@@ -23,7 +23,19 @@ import SwiftUI
 /// struct ContentView: View {
 ///     var body: some View {
 ///         ZStack {
-///             AnimatedMesh(theme: .auroraBlush)
+///             // You can now create custom themes with different grid sizes
+///             let customTheme = MeshGradientColorTheme(
+///                 width: 4,
+///                 height: 4,
+///                 meshColors: [
+///                     .blue, .purple, .cyan, .blue,
+///                     .purple, .cyan, .blue, .purple,
+///                     .cyan, .blue, .purple, .cyan,
+///                     .blue, .purple, .cyan, .blue
+///                 ]
+///             )
+///
+///             AnimatedMesh(theme: .auroraBlush) // Or use your customTheme
 ///                 .ignoresSafeArea()
 ///
 ///             VStack {
@@ -38,7 +50,6 @@ import SwiftUI
 /// ```
 ///
 /// - Important: Requires platforms that support `MeshGradient` in SwiftUI.
-/// - Note: The mesh is configured as 3×3 and uses `smoothsColors: true` for continuous color transitions.
 /// - SeeAlso: `MeshGradient`, `TimelineView`, `MeshGradientColorTheme`
 ///
 /// - Parameters:
@@ -50,13 +61,17 @@ import SwiftUI
 public struct AnimatedMesh: View {
     public let theme: MeshGradientColorTheme
     
+    public init(theme: MeshGradientColorTheme) {
+        self.theme = theme
+    }
+
     public var body: some View {
         TimelineView(.animation) { timeline in
             Rectangle()
                 .fill(
                     MeshGradient(
-                        width: 3,
-                        height: 3,
+                        width: theme.width,
+                        height: theme.height,
                         points: theme.meshPoints,
                         colors: theme.animatedColors(for: timeline.date),
                         smoothsColors: true
@@ -68,4 +83,5 @@ public struct AnimatedMesh: View {
 
 #Preview {
     AnimatedMesh(theme: .auroraBlush)
+        .ignoresSafeArea()
 }
