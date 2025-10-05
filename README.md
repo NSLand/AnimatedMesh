@@ -158,6 +158,10 @@ If used as a background, mark it as hidden from accessibility:
 - Requires **Swift 6.2** or later  
 - Uses SwiftUI’s native `MeshGradient` API  
 
+---
+
+## 📸 Preview
+![Animated Mesh Gradient Preview](preview.gif)
 
 ---
 
